@@ -1,5 +1,6 @@
 package com.example.cjcucsie.new_list;
 
+import android.arch.persistence.room.Dao;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,8 @@ import android.widget.TextView;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private List<String> mData;
-
+    private List<Entity> mData;
+    private com.example.cjcucsie.new_list.Dao mDb;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView;
@@ -27,8 +28,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    public MyAdapter(List<String> data) {
+    public MyAdapter(List<Entity> data, com.example.cjcucsie.new_list.Dao db) {
         mData = data;
+        mDb=db;
     }
 
     @Override
@@ -39,14 +41,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         return vh;
     }
     Button txtButton1;
+
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.mTextView.setText(mData.get(position));
+        holder.mTextView.setText(mData.get(position).name);
 
 
         txtButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Entity entity = mData.get(position);
+                mDb.delete(entity);
                 mData.remove(position);
                 MyAdapter.this.notifyDataSetChanged();
             }
